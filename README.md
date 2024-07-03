@@ -11,6 +11,12 @@ First, clone the repo, recursing into submodules, e.g.
 git clone --recurse-submodules https://github.com/ppenenko/metashade-glTFSample.git
 ```
 
+This will create the following top-level directory structure:
+
+*   [glTFSample](glTFSample) - submodule pointing at https://github.com/ppenenko/glTFSample. That repo is a fork of https://github.com/GPUOpen-LibrariesAndSDKs/glTFSample - a C++ host app, originally developed to demo the rendering of glTF assets in DX12 and Vulkan. You can read more about the functionality of the fork and the build instructions in the respective README.
+**   [build](build/glTFSample) - the build directory for the above repo.
+***   [DX12](build/glTFSample/DX12) - the directory where the DX12-specific solution of glTFSample is generated. It's added to [.gitignore](build/glTFSample/DX12/.gitignore)
+
 ## generate.py usage
 
 ```
