@@ -14,10 +14,10 @@ git clone --recurse-submodules https://github.com/ppenenko/metashade-glTFSample.
 This will create the following top-level directory structure:
 
    * [glTFSample](glTFSample) - submodule pointing at https://github.com/ppenenko/glTFSample. That repo is a fork of https://github.com/GPUOpen-LibrariesAndSDKs/glTFSample - a C++ host app, originally developed by AMD to demo the rendering of glTF assets in DX12 and Vulkan. You can read more about the functionality of the fork and the build instructions in the respective README.
-      * [build](build/glTFSample) - the build directory for the above repo.
-         * [DX12](build/glTFSample/DX12) - the directory where the DX12-specific solution of glTFSample is generated with CMake. It's added to [.gitignore](build/glTFSample/DX12/.gitignore)
-      * [libs/cauldron](libs/cauldron) - submodule pointing at https://github.com/ppenenko/Cauldron, a fork of https://github.com/GPUOpen-LibrariesAndSDKs/Cauldron, AMD's demo rendering library.
-      * [media/Cauldron-Media](media/Cauldron-Media) - submodule pointing at https://github.com/ppenenko/Cauldron-Media, cloned from https://github.com/GPUOpen-LibrariesAndSDKs/Cauldron-Media, which contains the glTF assets used in the demo.
+      * [build](glTFSample/build) - the build directory for the above repo.
+         * [DX12](glTFSample/build/DX12) - the directory where the DX12-specific solution of glTFSample is generated with CMake. It's added to [.gitignore](glTFSample/.gitignore)
+      * [libs/cauldron](glTFSample/libs/cauldron) - submodule pointing at https://github.com/ppenenko/Cauldron, a fork of https://github.com/GPUOpen-LibrariesAndSDKs/Cauldron, AMD's demo rendering library.
+      * [media/Cauldron-Media](glTFSample/media/Cauldron-Media) - submodule pointing at https://github.com/ppenenko/Cauldron-Media, cloned from https://github.com/GPUOpen-LibrariesAndSDKs/Cauldron-Media, which contains the glTF assets used in the demo.
    * [metashade](metashade) - submodule pointing at https://github.com/ppenenko/metashade
    * [src](src) - the code generating shaders with [metashade](metashade) which [glTFSample](glTFSample) can render with.
 
