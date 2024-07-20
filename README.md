@@ -24,7 +24,7 @@ The demo uses the following directory structure:
 
 ## Building [glTFSample](https://github.com/ppenenko/glTFSample/tree/metashade_demo)
 
-Follow the build instructions in [glTFSample/readme.md](https://github.com/ppenenko/glTFSample/tree/metashade_demo/readme.md).
+Follow the build instructions in [glTFSample/readme.md](https://github.com/ppenenko/glTFSample/blob/metashade_demo/readme.md#build-instructions).
 
 ## Generating the shaders
 
@@ -41,13 +41,13 @@ pip install pygltflib
 --out-dir   Path to the output directory
 ```
 
-The script processes all glTF asset files it finds under the directory specified by `--gltf-dir` and writes the generated shader files in the directory specified by `--out-dir`.
+The script processes all glTF asset files it finds under the directory specified by `--gltf-dir` and writes the generated shader files to the directory specified by `--out-dir`.
 
 The Visual Studio Code launch configurations in [.vscode/launch.json](.vscode/launch.json) execute the above script with the command-line arguments set to the appropriate paths in the demo's directory structure.
 
 ## Rendering with the generated shaders
 
-In order to use the generated shaders with [glTFSample](https://github.com/ppenenko/glTFSample/tree/metashade_demo), their parent directory needs to be passed to the executable via a [command-line argument](https://github.com/ppenenko/glTFSample/tree/metashade_demo#command-line-interface):
+In order to use the generated shaders with [glTFSample](https://github.com/ppenenko/glTFSample/tree/metashade_demo), their parent directory needs to be passed to the executable via a [command-line argument](https://github.com/ppenenko/glTFSample/blob/metashade_demo/readme.md#command-line-interface):
 
 ```
 cd glTFSample\bin
