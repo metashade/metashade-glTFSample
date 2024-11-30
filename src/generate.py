@@ -20,7 +20,7 @@ from pygltflib import GLTF2
 
 from metashade.hlsl import dxc
 from metashade.util import perf, spirv_cross
-from metashade.glsl import glslc
+from metashade.glsl.util import glslc
 
 import _impl
 
