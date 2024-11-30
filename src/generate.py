@@ -60,6 +60,13 @@ class _Shader(abc.ABC):
     def compile(self, to_glsl : bool) -> str:
         pass
 
+def _compile_shader(shader, to_glsl):
+    '''
+    Helper function to compile a shader in a process pool.
+    Without it, the pool would not be able to pickle the method.
+    '''
+    return shader.compile(to_glsl)
+
 class _HlslShader(_Shader):
     def compile(self, to_glsl : bool) -> str:
         log = io.StringIO()
@@ -268,7 +275,7 @@ if __name__ == "__main__":
             with mp.Pool() as pool:
                 for log in pool.imap_unordered(
                     functools.partial(
-                        _Shader.compile,
+                        _compile_shader,
                         to_glsl = args.to_glsl
                     ),
                     shaders
