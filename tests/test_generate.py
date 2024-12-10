@@ -12,7 +12,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from generate import generate
+import os, sys
+from pathlib import Path
+
+tests_dir_path = Path(__file__).parent
+repo_root_dir_path = tests_dir_path.parent
+src_dir_path = (repo_root_dir_path / 'src').resolve()
+metashade_dir_path = (repo_root_dir_path / 'metashade').resolve()
+
+sys.path += [str(src_dir_path), str(metashade_dir_path)]
+
+import generate
 
 class TestGenerate:
     def test_generate(self):
