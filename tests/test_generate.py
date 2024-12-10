@@ -26,4 +26,15 @@ import generate
 
 class TestGenerate:
     def test_generate(self):
-        print("test_generate")
+        gltf_sample_dir_path = repo_root_dir_path / 'glTFSample'
+        gltf_dir_path = gltf_sample_dir_path / 'media' / 'Cauldron-Media'
+        out_dir_path = gltf_sample_dir_path / 'build' / 'DX12' / 'metashade-out'
+
+        generate.generate(
+            gltf_dir_path = gltf_dir_path,
+            out_dir_path = out_dir_path,
+            compile = True,
+            to_glsl = False,
+            skip_codegen = False,
+            serial  = False
+        )
