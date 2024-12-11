@@ -265,9 +265,10 @@ def generate(
     if compile:
         print()
         dxc.identify()
+        glslc.identify()
+
         if to_glsl:
             spirv_cross.identify()
-            glslc.identify()
 
         if serial:
             for shader in shaders:
