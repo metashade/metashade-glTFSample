@@ -63,3 +63,7 @@ jobs:
     - name: Test with pytest
       run: |
         pytest -v tests
+    - name: Print the directory tree
+      run: |
+        pwd
+        tree /F
