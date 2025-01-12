@@ -251,24 +251,22 @@ def generate(
     os.makedirs(out_dir_path, exist_ok = True)
 
     shaders = []
+    process_asset_partial = functools.partial(
+        _process_asset,
+        out_dir = out_dir_path,
+        skip_codegen = skip_codegen
+    )
+    gltf_files_glob = gltf_dir_path.glob('**/*.gltf')
     if serial:
-        for gltf_path in gltf_dir_path.glob('**/*.gltf'):
-            asset_result = _process_asset(
-                gltf_file_path = gltf_path,
-                out_dir = out_dir_path,
-                skip_codegen = skip_codegen
-            )
+        for gltf_path in gltf_files_glob:
+            asset_result = process_asset_partial(gltf_file_path = gltf_path)
             print(asset_result.log)
             shaders += asset_result.shaders
     else:
         with mp.Pool() as pool:
             for asset_result in pool.imap_unordered(
-                functools.partial(
-                    _process_asset,
-                    out_dir = out_dir_path,
-                    skip_codegen = skip_codegen
-                ),
-                gltf_dir_path.glob('**/*.gltf')
+                process_asset_partial,
+                gltf_files_glob
             ):
                 print(asset_result.log)
                 shaders += asset_result.shaders
