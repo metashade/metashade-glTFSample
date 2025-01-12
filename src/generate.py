@@ -134,8 +134,14 @@ def generate(
                 shaders += asset_result.shaders
                 shader_index[asset_result.asset_name] = asset_result.shader_index
 
-    with open(out_dir_path / 'shader_index.json', 'w') as shader_index_file:
-        json.dump(shader_index, shader_index_file)
+    shader_index_file_path = out_dir_path / 'shader_index.json'
+    with open(shader_index_file_path, 'w') as shader_index_file:
+        json.dump(
+            shader_index,
+            shader_index_file,
+            indent = 4
+        )
+    print(f'\nShader index written to {shader_index_file_path}\n')
 
     if compile:
         print()
