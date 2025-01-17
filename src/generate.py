@@ -83,7 +83,7 @@ def _process_asset(
 
         per_asset_shader_index.append(per_mesh_shader_index)
         shader_index_file_path = (
-            out_dir / gltf_file_path.name().with_suffix('json')
+            out_dir / gltf_file_path.with_suffix('.json').name
         )
         with open(shader_index_file_path, 'w') as shader_index_file:
             json.dump(
@@ -91,7 +91,7 @@ def _process_asset(
                 shader_index_file,
                 indent = 4
             )
-        print(f'\nShader index written to {shader_index_file_path}\n')
+        print(f'Shader index written to {shader_index_file_path}\n')
 
     log, sys.stdout = sys.stdout, log
     return _AssetResult(
