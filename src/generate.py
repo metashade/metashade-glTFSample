@@ -12,8 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import json
-import abc, argparse, functools, io, os, subprocess, sys
+import argparse, functools, io, json, os, sys
 from pathlib import Path
 import multiprocessing as mp
 from typing import List, NamedTuple
@@ -39,9 +38,7 @@ def _compile_shader(
 
 class _AssetResult(NamedTuple):
     log : io.StringIO
-    asset_name : str
     shaders : List[_shader_base.Shader]
-    shader_index : List[List[str]]
 
 def _process_asset(
     gltf_file_path : str,
@@ -85,13 +82,21 @@ def _process_asset(
             per_asset_shaders += per_primitive_shaders
 
         per_asset_shader_index.append(per_mesh_shader_index)
+        shader_index_file_path = (
+            out_dir / gltf_file_path.name().with_suffix('json')
+        )
+        with open(shader_index_file_path, 'w') as shader_index_file:
+            json.dump(
+                per_asset_shader_index,
+                shader_index_file,
+                indent = 4
+            )
+        print(f'\nShader index written to {shader_index_file_path}\n')
 
     log, sys.stdout = sys.stdout, log
     return _AssetResult(
-        log.getvalue(),
-        asset_name = gltf_file_path.name,
-        shaders = per_asset_shaders,
-        shader_index = per_asset_shader_index
+        log = log.getvalue(),
+        shaders = per_asset_shaders
     )
 
 def generate(
@@ -109,7 +114,6 @@ def generate(
     os.makedirs(out_dir_path, exist_ok = True)
 
     shaders = []
-    shader_index = dict()
 
     process_asset_partial = functools.partial(
         _process_asset,
@@ -123,7 +127,6 @@ def generate(
             asset_result = process_asset_partial(gltf_file_path = gltf_path)
             print(asset_result.log)
             shaders += asset_result.shaders
-            shader_index[asset_result.asset_name] = asset_result.shader_index
     else:
         with mp.Pool() as pool:
             for asset_result in pool.imap_unordered(
@@ -132,16 +135,6 @@ def generate(
             ):
                 print(asset_result.log)
                 shaders += asset_result.shaders
-                shader_index[asset_result.asset_name] = asset_result.shader_index
-
-    shader_index_file_path = out_dir_path / 'shader_index.json'
-    with open(shader_index_file_path, 'w') as shader_index_file:
-        json.dump(
-            shader_index,
-            shader_index_file,
-            indent = 4
-        )
-    print(f'\nShader index written to {shader_index_file_path}\n')
 
     if compile:
         print()
