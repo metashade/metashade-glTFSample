@@ -24,15 +24,17 @@ class Shader(abc.ABC):
     def __init__(
         self,
         out_dir : Path,
-        shader_name : str,
-        file_suffix : str
+        shader_name : str
     ):
-        self.src_path = (
-            out_dir / f'{shader_name}-{file_suffix}'
-        )
+        self.src_path = self._generate_src_path(out_dir, shader_name)
+        self.bin_path = self._generate_bin_path(out_dir, shader_name)
 
     @abc.abstractmethod
-    def _get_glslc_stage():
+    def _generate_src_path(self, out_dir : Path, shader_name : str) -> Path:
+        pass
+
+    @abc.abstractmethod
+    def _generate_bin_path(self, out_dir : Path, shader_name : str) -> Path:
         pass
 
     @abc.abstractmethod

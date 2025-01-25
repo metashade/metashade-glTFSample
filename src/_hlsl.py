@@ -21,61 +21,57 @@ from metashade.glsl.util import glslc
 from metashade.util import spirv_cross
 
 class Shader(_shader_base.Shader):
+    @staticmethod
     @abc.abstractmethod
-    def _get_hlsl_profile():
+    def _get_hlsl_profile() -> str:
         pass
+
+    @staticmethod
+    @abc.abstractmethod
+    def _get_stage_name() -> str:
+        pass
+
+    def _generate_src_path(self, out_dir : Path, shader_name : str) -> Path:
+        return out_dir / f'{shader_name}-{self._get_stage_name()}.hlsl'
+
+    def _generate_bin_path(self, out_dir : Path, shader_name : str) -> Path:
+        return out_dir / f'{shader_name}-{self._get_stage_name()}.cso'
 
     def _compile(self) -> bool:
         try:
-            dxc_output_path = Path(self.src_path).with_suffix('.cso')
-            
             dxc.compile(
                 src_path = self.src_path,
                 entry_point_name = _impl.entry_point_name,
                 profile = self._get_hlsl_profile(),
                 to_spirv = False,
                 o0 = False,
-                output_path = dxc_output_path
+                output_path = self.bin_path
             )
             return True
         except subprocess.CalledProcessError as err:
             return False
 
 class VertexShader(Shader):
-    def __init__(
-        self,
-        out_dir : Path,
-        shader_name : str
-    ):
-        super().__init__(out_dir, shader_name, 'VS.hlsl')
-
     @staticmethod
-    def _get_hlsl_profile():
+    def _get_hlsl_profile() -> str:
         return 'vs_6_0'
     
     @staticmethod
-    def _get_glslc_stage():
-        return 'vertex'
+    def _get_stage_name() -> str:
+        return 'VS'
 
     def _generate(self, shader_file, material, primitive):
         _impl.generate_vs(shader_file, primitive)
 
 class PixelShader(Shader):
-    def __init__(
-        self,
-        out_dir : Path,
-        shader_name : str
-    ):
-        super().__init__(out_dir, shader_name, 'PS.hlsl')
-
     @staticmethod
     def _get_hlsl_profile():
         return 'ps_6_0'
     
     @staticmethod
-    def _get_glslc_stage():
-        return 'fragment'
-    
+    def _get_stage_name() -> str:
+        return 'PS'
+
     def _generate(self, shader_file, material, primitive):
         _impl.generate_ps(
             shader_file,

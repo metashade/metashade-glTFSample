@@ -46,8 +46,8 @@ def _process_asset(
     log = io.StringIO()
     log, sys.stdout = sys.stdout, log
 
-    per_asset_shaders = []
-    per_asset_shader_index = []
+    per_asset_shader_list = []  # List of shaders to compile by this script
+    per_asset_shader_index = [] # Dictionary of shaders per mesh and primitive
 
     with perf.TimedScope(f'Loading glTF asset {gltf_file_path} '):
         gltf_asset = GLTF2().load(gltf_file_path)
@@ -61,24 +61,32 @@ def _process_asset(
 
         for primitive_idx, primitive in enumerate(mesh.primitives):
             shader_base_name = f'{mesh_name}-{primitive_idx}'
-            per_mesh_shader_index.append(shader_base_name)
 
-            per_primitive_shaders = [
-                ShaderType(out_dir, shader_base_name)
-                for ShaderType in [
-                    _hlsl.VertexShader, _hlsl.PixelShader, _glsl.FragmentShader
-                ]
-            ]
+            per_primitive_shader_list = []
+            per_primitive_shader_index = dict()
 
-            per_primitive_shaders = { shader.file_path.name }
-            
+            dx_vs = _hlsl.VertexShader(out_dir, shader_base_name)
+            dx_ps = _hlsl.PixelShader(out_dir, shader_base_name)
+
+            per_primitive_shader_list += [dx_vs, dx_ps]
+
+            per_primitive_shader_index['dx'] = {
+                'vs': dx_vs.bin_path.name,
+                'ps': dx_ps.bin_path.name
+            }
+
+            vk_frag = _glsl.FragmentShader(out_dir, shader_base_name)
+            per_primitive_shader_list.append(vk_frag)
+            per_primitive_shader_index['vk'] = { 'frag' : vk_frag.bin_path.name }
+
             material = gltf_asset.materials[primitive.material]
-            for shader in per_primitive_shaders:
+            for shader in per_primitive_shader_list:
                 shader.generate(
                     material,
                     primitive
                 )
-            per_asset_shaders += per_primitive_shaders
+            per_asset_shader_list += per_primitive_shader_list
+            per_mesh_shader_index.append(per_primitive_shader_index)
 
         per_asset_shader_index.append(per_mesh_shader_index)
         shader_index_file_path = (
@@ -95,7 +103,7 @@ def _process_asset(
     log, sys.stdout = sys.stdout, log
     return _AssetResult(
         log = log.getvalue(),
-        shaders = per_asset_shaders
+        shaders = per_asset_shader_list
     )
 
 def generate(
