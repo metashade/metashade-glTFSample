@@ -18,14 +18,14 @@ import _shader_base, _impl
 import subprocess
 
 class Shader(_shader_base.Shader):
-    def _compile(self, to_glsl : bool) -> bool:
+    def _compile(self) -> bool:
         try:
-            glsl_output_path = Path(self.file_path).with_suffix('.spv')
+            output_path = Path(self.src_path).with_suffix('.spv')
             glslang.compile(
-                src_path = self.file_path,
+                src_path = self.src_path,
                 target_env = 'vulkan1.1',
                 shader_stage = 'frag',
-                output_path = glsl_output_path
+                output_path = output_path
             )
             return True
         except subprocess.CalledProcessError as err:

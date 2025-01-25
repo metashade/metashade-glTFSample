@@ -25,36 +25,18 @@ class Shader(_shader_base.Shader):
     def _get_hlsl_profile():
         pass
 
-    def _compile(self, to_glsl : bool) -> bool:
+    def _compile(self) -> bool:
         try:
-            dxc_output_path = Path(self.file_path).with_suffix(
-                '.hlsl.spv' if to_glsl else '.cso'
-            )
+            dxc_output_path = Path(self.src_path).with_suffix('.cso')
             
             dxc.compile(
-                src_path = self.file_path,
+                src_path = self.src_path,
                 entry_point_name = _impl.entry_point_name,
                 profile = self._get_hlsl_profile(),
-                to_spirv = to_glsl,
-                o0 = to_glsl,
+                to_spirv = False,
+                o0 = False,
                 output_path = dxc_output_path
             )
-
-            if to_glsl:
-                glsl_path = Path(self.file_path).with_suffix('.glsl')
-                spirv_cross.spirv_to_glsl(
-                    spirv_path = dxc_output_path,
-                    glsl_path = glsl_path
-                )
-                spv_path = Path(self.file_path).with_suffix('.spv')
-
-                glslc.compile(
-                    src_path = glsl_path,
-                    target_env = 'vulkan1.1',
-                    shader_stage = self._get_glslc_stage(),
-                    entry_point_name = _impl.entry_point_name,
-                    output_path = spv_path
-                )
             return True
         except subprocess.CalledProcessError as err:
             return False
