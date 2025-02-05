@@ -12,9 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import math
-from typing import Any, NamedTuple
-from metashade.hlsl.sm6 import ps_6_0, vs_6_0
+from typing import Any
+from metashade.hlsl.sm6 import vs_6_0
+
+from . import common
 
 def generate(vs_file, primitive):
     sh = vs_6_0.Generator(
@@ -23,8 +24,8 @@ def generate(vs_file, primitive):
         matrix_post_multiplication = True
     )
 
-    _generate_per_frame_uniform_buffer(sh)
-    _generate_per_object_uniform_buffer(sh, is_ps = False)
+    common.generate_per_frame_uniform_buffer(sh)
+    common.generate_per_object_uniform_buffer(sh, is_ps = False)
 
     attributes = primitive.attributes
 
@@ -54,9 +55,9 @@ def generate(vs_file, primitive):
         if attributes.WEIGHTS_0 is not None:
             raise RuntimeError('Unsupported attribute WEIGHTS_0')
 
-    _generate_vs_out(sh, primitive)
+    common.generate_vs_out(sh, primitive)
 
-    with sh.entry_point(entry_point_name, sh.VsOut)(vsIn = sh.VsIn):
+    with sh.entry_point(common.entry_point_name, sh.VsOut)(vsIn = sh.VsIn):
         sh.Pw = sh.g_WorldXf.xform(sh.vsIn.Pobj)
         sh.vsOut = sh.VsOut()
         sh.vsOut.Pclip = sh.g_VpXf.xform(sh.Pw)

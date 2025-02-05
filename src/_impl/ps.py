@@ -14,8 +14,11 @@
 
 import math
 from typing import Any, NamedTuple
-from metashade.hlsl.sm6 import ps_6_0, vs_6_0
+
+from metashade.hlsl.sm6 import ps_6_0
 from metashade.glsl import frag
+
+from . import common
 
 def generate_ps(ps_file, material, primitive):
     sh = ps_6_0.Generator(
@@ -24,10 +27,10 @@ def generate_ps(ps_file, material, primitive):
         matrix_post_multiplication = True
     )
 
-    _generate_per_frame_uniform_buffer(sh)
-    _generate_per_object_uniform_buffer(sh, is_ps = True)
+    common.generate_per_frame_uniform_buffer(sh)
+    common.generate_per_object_uniform_buffer(sh, is_ps = True)
 
-    _generate_vs_out(sh, primitive)
+    common.generate_vs_out(sh, primitive)
 
     with sh.ps_output('PsOut') as PsOut:
         PsOut.SV_Target('rgbaColor', sh.RgbaF)
@@ -400,7 +403,7 @@ def generate_ps(ps_file, material, primitive):
         sh.return_(sh.Nw)
 
     # Finally, the pixel shader entry point
-    with sh.entry_point(entry_point_name, sh.PsOut)(psIn = sh.VsOut):
+    with sh.entry_point(common.entry_point_name, sh.PsOut)(psIn = sh.VsOut):
         sh.Vw = (sh.g_cameraPw - sh.psIn.Pw).normalize()
         sh.Nw = sh.getNormal(psIn = sh.psIn)
         

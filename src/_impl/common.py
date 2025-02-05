@@ -14,7 +14,7 @@
 
 entry_point_name = 'main'
 
-def _generate_vs_out(sh, primitive):
+def generate_vs_out(sh, primitive):
     with sh.vs_output('VsOut') as VsOut:
         VsOut.SV_Position('Pclip', sh.Vector4f)
         
@@ -30,7 +30,7 @@ def _generate_vs_out(sh, primitive):
         if primitive.attributes.COLOR_0 is not None:
             VsOut.color('rgbaColor0', sh.RgbaF)
 
-def _generate_per_frame_uniform_buffer(sh):
+def generate_per_frame_uniform_buffer(sh):
     sh.struct('Light')(
         VpXf = sh.Matrix4x4f,
         ViewXf = sh.Matrix4x4f,
@@ -66,7 +66,7 @@ def _generate_per_frame_uniform_buffer(sh):
         sh.uniform('g_nLights', sh.Float)   # should be int
         sh.uniform('g_lodBias', sh.Float)
 
-def _generate_per_object_uniform_buffer(sh, is_ps : bool):
+def generate_per_object_uniform_buffer(sh, is_ps : bool):
     if is_ps:
         sh.struct('PbrFactors')(
             rgbaEmissive = sh.RgbaF,
