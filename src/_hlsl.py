@@ -61,7 +61,7 @@ class VertexShader(Shader):
         return 'VS'
 
     def _generate(self, shader_file, material, primitive):
-        _impl.generate_vs(shader_file, primitive)
+        _impl.vs.generate(shader_file, primitive)
 
 class PixelShader(Shader):
     @staticmethod
@@ -73,7 +73,7 @@ class PixelShader(Shader):
         return 'PS'
 
     def _generate(self, shader_file, material, primitive):
-        _impl.generate_ps(
+        _impl.ps.generate_ps(
             shader_file,
             material,
             primitive

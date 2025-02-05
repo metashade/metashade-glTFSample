@@ -48,4 +48,4 @@ class FragmentShader(Shader):
         return 'frag'
 
     def _generate(self, shader_file, material, primitive):
-        _impl.generate_frag(shader_file, material, primitive)
+        _impl.ps.generate_frag(shader_file, material, primitive)
