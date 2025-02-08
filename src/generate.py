@@ -18,12 +18,13 @@ import multiprocessing as mp
 from typing import List, NamedTuple
 from pygltflib import GLTF2
 
-from metashade.util import perf, spirv_cross
+from metashade.util import perf
 from metashade.hlsl.util import dxc
-from metashade.glsl.util import glslang, glslc
+from metashade.glsl.util import glslang
 from metashade.util.tests import RefDiffer
 
 import _shader_base, _hlsl, _glsl
+from _impl.vertex_data import VertexData
 
 def _generate_and_compile(
     shader,
@@ -67,13 +68,16 @@ def _process_asset(
 
             material = gltf_asset.materials[primitive.material]
 
+            vertex_data = VertexData(primitive)
+
             dx_vs = _hlsl.VertexShader(
                 out_dir, shader_base_name,
-                primitive
+                vertex_data
             )
             dx_ps = _hlsl.PixelShader(
                 out_dir, shader_base_name,
-                material, primitive
+                material,
+                vertex_data
             )
 
             per_primitive_shader_list += [dx_vs, dx_ps]

@@ -16,13 +16,12 @@ import abc
 from pathlib import Path
 import subprocess
 import _shader_base
-import _impl.vs as impl_vs
+
+from _impl.vertex_data import VertexData
 import _impl.ps as impl_ps
 import _impl.common as common
 
 from metashade.hlsl.util import dxc
-from metashade.glsl.util import glslc
-from metashade.util import spirv_cross
 
 class Shader(_shader_base.Shader):
     @staticmethod
@@ -56,11 +55,11 @@ class Shader(_shader_base.Shader):
             return False
 
 class VertexShader(Shader):
-    def __init__(self, out_dir, shader_name, primitive):
+    def __init__(self, out_dir, shader_name, vertex_data):
         super().__init__(out_dir, shader_name)
 
         def generate(shader_file):
-            impl_vs.generate(shader_file, primitive)
+            vertex_data.generate_vs(shader_file)
         self._generate_wrapped(generate)
 
     @staticmethod
