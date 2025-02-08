@@ -355,7 +355,7 @@ def generate_ps(ps_file, material, primitive):
 
         sh.return_(sh.psOut)
 
-def generate_frag(frag_file, material, primitive):
+def generate_frag(frag_file):
     sh = frag.Generator(frag_file, '450')
 
     sh.out_f4Color = sh.stage_output(sh.Float4, location = 0)

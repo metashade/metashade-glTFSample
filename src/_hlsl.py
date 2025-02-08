@@ -56,6 +56,13 @@ class Shader(_shader_base.Shader):
             return False
 
 class VertexShader(Shader):
+    def __init__(self, out_dir, shader_name, primitive):
+        super().__init__(out_dir, shader_name)
+
+        def generate(shader_file):
+            impl_vs.generate(shader_file, primitive)
+        self._generate_wrapped(generate)
+
     @staticmethod
     def _get_hlsl_profile() -> str:
         return 'vs_6_0'
@@ -64,10 +71,18 @@ class VertexShader(Shader):
     def _get_stage_name() -> str:
         return 'VS'
 
-    def _generate(self, shader_file, material, primitive):
-        impl_vs.generate(shader_file, primitive)
-
 class PixelShader(Shader):
+    def __init__(self, out_dir, shader_name, material, primitive):
+        super().__init__(out_dir, shader_name)
+
+        def generate(shader_file):
+            impl_ps.generate_ps(
+                shader_file,
+                material,
+                primitive
+            )
+        self._generate_wrapped(generate)
+
     @staticmethod
     def _get_hlsl_profile():
         return 'ps_6_0'
@@ -75,10 +90,3 @@ class PixelShader(Shader):
     @staticmethod
     def _get_stage_name() -> str:
         return 'PS'
-
-    def _generate(self, shader_file, material, primitive):
-        impl_ps.generate_ps(
-            shader_file,
-            material,
-            primitive
-        )
