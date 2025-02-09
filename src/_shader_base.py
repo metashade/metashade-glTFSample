@@ -29,6 +29,9 @@ class Shader(abc.ABC):
         self.src_path = self._generate_src_path(out_dir, shader_name)
         self.bin_path = self._generate_bin_path(out_dir, shader_name)
 
+    def get_id(self) -> str:
+        return self.bin_path.name
+
     @abc.abstractmethod
     def _generate_src_path(self, out_dir : Path, shader_name : str) -> Path:
         pass

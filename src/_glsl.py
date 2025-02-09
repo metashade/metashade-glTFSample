@@ -45,9 +45,12 @@ class Shader(_shader_base.Shader, abc.ABC):
             return False
 
 class FragmentShader(Shader):
-    def __init__(self, out_dir, shader_name):
-        super().__init__(out_dir, shader_name)
+    def __init__(self, out_dir):
+        super().__init__(out_dir, 'GLTFPbrPass')
         self._generate_wrapped(impl_ps.generate_frag)
+
+    def get_id(self) -> str:
+        return 'GLTFPbrPass-frag'
 
     @staticmethod
     def _get_stage_name() -> str:
