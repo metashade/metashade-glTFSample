@@ -73,7 +73,7 @@ def _process_asset(
                 material = material,
                 vertex_data = vertex_data
             )
-            
+
             per_primitive_shader_index['dx'] = {
                 'vs': dx_vs.get_id(),
                 'ps': dx_ps.get_id(),
@@ -153,7 +153,7 @@ def generate(
         num_failed = 0
 
         if serial:
-            for shader_id, shader in shader_dict.items():
+            for shader in shader_dict.values():
                 result = shader.generate_and_compile(ref_differ = ref_differ)
                 if not result.success:
                     num_failed += 1
@@ -165,7 +165,7 @@ def generate(
                         _generate_and_compile,
                         ref_differ = ref_differ
                     ),
-                    shader_dict
+                    shader_dict.values()
                 ):
                     if not result.success:
                         num_failed += 1
