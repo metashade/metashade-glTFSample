@@ -21,16 +21,11 @@ import _shader_base
 import _impl.ps as impl_ps
 
 class Shader(_shader_base.Shader, abc.ABC):
-    @staticmethod
-    @abc.abstractmethod
-    def _get_stage_name() -> str:
-        pass
-
     def _generate_src_path(self, out_dir : Path, shader_name : str) -> Path:
-        return out_dir / f'{shader_name}-{self._get_stage_name()}.glsl'
+        return out_dir / f'{shader_name}.glsl'
 
     def _generate_bin_path(self, out_dir : Path, shader_name : str) -> Path:
-        return out_dir / f'{shader_name}-{self._get_stage_name()}.spv'
+        return out_dir / f'{shader_name}.spv'
 
     def _compile(self) -> bool:
         try:
@@ -46,11 +41,10 @@ class Shader(_shader_base.Shader, abc.ABC):
 
 class FragmentShader(Shader):
     def __init__(self, out_dir):
-        super().__init__(out_dir, 'GLTFPbrPass')
-        self._generate_wrapped(impl_ps.generate_frag)
+        super().__init__(out_dir, 'GLTFPbrPass-frag')
 
-    def get_id(self) -> str:
-        return 'GLTFPbrPass-frag'
+    def _generate_deferred(self):
+        self._generate_wrapped(impl_ps.generate_frag)
 
     @staticmethod
     def _get_stage_name() -> str:

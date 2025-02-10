@@ -40,9 +40,9 @@ class Shader(abc.ABC):
     def _generate_bin_path(self, out_dir : Path, shader_name : str) -> Path:
         pass
 
-    # @abc.abstractmethod
-    # def _generate_deferred(self):
-    #     pass
+    @abc.abstractmethod
+    def _generate_deferred(self):
+        pass
 
     def _generate_wrapped(self, generate_func):
         with perf.TimedScope(f'Generating {self.src_path} ', 'Done'), \
@@ -63,6 +63,8 @@ class Shader(abc.ABC):
     ) -> GenerateAndCompileResult:
         log = io.StringIO()
         log, sys.stdout = sys.stdout, log
+
+        self._generate_deferred()
 
         if ref_differ is not None:
             ref_differ(self.src_path)

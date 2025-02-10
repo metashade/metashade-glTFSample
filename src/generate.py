@@ -61,40 +61,36 @@ def _process_asset(
         per_mesh_shader_index = []
 
         for primitive_idx, primitive in enumerate(mesh.primitives):
-            shader_base_name = f'{mesh_name}-{primitive_idx}'
-
             per_primitive_shader_index = dict()
 
             material = gltf_asset.materials[primitive.material]
             vertex_data = VertexData(primitive)
 
-            dx_vs = _hlsl.VertexShader(
-                out_dir, shader_base_name,
-                vertex_data
-            )
+            dx_vs = _hlsl.VertexShader(out_dir, vertex_data)
             dx_ps = _hlsl.PixelShader(
-                out_dir, shader_base_name,
-                material,
-                vertex_data
+                out_dir = out_dir,
+                primitive_id = f'{mesh_name}-{primitive_idx}',
+                material = material,
+                vertex_data = vertex_data
             )
-
-            for shader in [dx_vs, dx_ps]:
-                if shader.get_id() in shader_dict:
-                    raise RuntimeError(
-                        'Unexpected: shaders sharing the same ID: '
-                        f'{shader.get_id()}'
-                    )
-                shader_dict[shader.get_id()] = shader
-
+            
             per_primitive_shader_index['dx'] = {
                 'vs': dx_vs.get_id(),
                 'ps': dx_ps.get_id(),
             }
 
             vk_frag = _glsl.FragmentShader(out_dir)
-            shader_dict[vk_frag.get_id()] = vk_frag
-
             per_primitive_shader_index['vk'] = { 'frag' : vk_frag.get_id() }
+
+            if dx_ps.get_id() in shader_dict:
+                raise RuntimeError(
+                    'Unexpected: shaders sharing the same ID: '
+                    f'{dx_ps.get_id()}'
+                )
+
+            for shader in (dx_vs, dx_ps, vk_frag):
+                shader_dict[shader.get_id()] = shader
+
             per_mesh_shader_index.append(per_primitive_shader_index)
 
         shader_index.append(per_mesh_shader_index)
