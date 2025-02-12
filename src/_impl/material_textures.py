@@ -52,6 +52,9 @@ class MaterialTextures:
                      'is not implemented yet, '
                     'see https://github.com/metashade/metashade/issues/18')
 
+    def __len__(self):
+        return len(self._textures)
+    
     def generate_uniforms(self, sh):
         # The host app allocates texture and uniform registers for material
         # textures sorted by name

@@ -48,14 +48,16 @@ def generate_ps(
         'iblDiffuse'    : sh.TextureCube(sh.RgbaF),
         'iblSpecular'   : sh.TextureCube(sh.RgbaF)
     }.items():
-        texture_idx += 1    # continuing right after the material textures
+        # continuing right after the material textures
+        texture_idx = len(material_textures)
+
         sh.uniform(
             common.get_texture_uniform_name(ibl_texture_name),
             ibl_texture_type,
             dx_register = texture_idx
         )
         sh.uniform(
-            common._get_sampler_uniform_name(ibl_texture_name),
+            common.get_sampler_uniform_name(ibl_texture_name),
             sh.Sampler,
             dx_register = texture_idx
         )
