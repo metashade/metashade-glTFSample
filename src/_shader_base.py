@@ -50,7 +50,7 @@ class Shader(abc.ABC):
         pass
 
     def _generate_wrapped(self, generate_func):
-        with perf.TimedScope(f'Generating {self._src_path} ', 'Done'), \
+        with perf.TimedScope(f'Generating {self._src_path} '), \
             open(self._src_path, 'w') as shader_file:
             #
             generate_func(shader_file)
