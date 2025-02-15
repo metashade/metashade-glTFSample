@@ -16,29 +16,29 @@ from typing import Any, NamedTuple
 from . import common
 
 class MaterialTextures:
-    class _MaterialTexture(NamedTuple):
+    class _TextureDef(NamedTuple):
         gltf_texture : Any
         texel_dtype_name : str
 
     def __init__(self, material):
-        self._textures = dict()
+        self._texture_defs = dict()
 
-        def _def_material_texture(parent, name: str, texel_dtype_name = None):
+        def _define(parent, name: str, texel_dtype_name = None):
             gltf_texture = getattr(parent, name + 'Texture')
             if gltf_texture is not None:
-                self._textures[name] = self._MaterialTexture(
+                self._texture_defs[name] = self._TextureDef(
                     gltf_texture, texel_dtype_name
                 )
 
-        _def_material_texture(material, 'normal', 'Vector4f')
-        _def_material_texture(material, 'occlusion')
-        _def_material_texture(material, 'emissive', 'RgbaF')
+        _define(material, 'normal', 'Vector4f')
+        _define(material, 'occlusion')
+        _define(material, 'emissive', 'RgbaF')
 
         if material.pbrMetallicRoughness is not None:
-            _def_material_texture(
+            _define(
                 material.pbrMetallicRoughness, 'baseColor', 'RgbaF'
             )
-            _def_material_texture(
+            _define(
                 material.pbrMetallicRoughness,
                 'metallicRoughness',
                 'RgbaF'
@@ -53,13 +53,13 @@ class MaterialTextures:
                     'see https://github.com/metashade/metashade/issues/18')
 
     def __len__(self):
-        return len(self._textures)
+        return len(self._texture_defs)
     
     def generate_uniforms(self, sh):
         # The host app allocates texture and uniform registers for material
         # textures sorted by name
         for texture_idx, (texture_name, material_texture) in enumerate(
-            sorted(self._textures.items())
+            sorted(self._texture_defs.items())
         ):
             texel_dtype = (
                 getattr(sh, material_texture.texel_dtype_name)
@@ -79,7 +79,7 @@ class MaterialTextures:
             )
 
     def get_uv(self, sh, texture_name : str):
-        material_texture = self._textures.get(texture_name)
+        material_texture = self._texture_defs.get(texture_name)
         if material_texture is None:
             return None
 
