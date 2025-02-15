@@ -42,15 +42,15 @@ def generate_ps(
     _pbr_surf_lib.generate(sh)
     material_textures.generate_uniforms(sh)
 
+    # continuing right after the material textures
+    texture_idx = len(material_textures)
+
     # IBL texture/sampler definitions
     for ibl_texture_name, ibl_texture_type in {
         'iblBrdfLut'    : sh.Texture2d,
         'iblDiffuse'    : sh.TextureCube(sh.RgbaF),
         'iblSpecular'   : sh.TextureCube(sh.RgbaF)
     }.items():
-        # continuing right after the material textures
-        texture_idx = len(material_textures)
-
         sh.uniform(
             common.get_texture_uniform_name(ibl_texture_name),
             ibl_texture_type,
@@ -61,6 +61,7 @@ def generate_ps(
             sh.Sampler,
             dx_register = texture_idx
         )
+        texture_idx += 1
 
     # The shadow map registers are hardcoded in the host app
     shadow_map_register = 9
