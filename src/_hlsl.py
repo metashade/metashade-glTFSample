@@ -21,6 +21,8 @@ import _impl.ps as impl_ps
 import _impl.common as common
 
 from metashade.hlsl.util import dxc
+from metashade.glsl.util import glslc
+from metashade.util import spirv_cross
 
 class Shader(_shader_base.Shader):
     @staticmethod
@@ -38,14 +40,44 @@ class Shader(_shader_base.Shader):
 
     def _compile(self) -> bool:
         try:
-            dxc.compile(
-                src_path = self._src_path,
-                entry_point_name = common.entry_point_name,
-                profile = self._get_hlsl_profile(),
+            def dxc_compile(to_spirv, output_path):
+                dxc.compile(
+                    src_path = self._src_path,
+                    entry_point_name = common.entry_point_name,
+                    profile = self._get_hlsl_profile(),
+                    to_spirv = to_spirv,
+                    o0 = to_spirv,
+                    output_path = output_path
+                )
+
+            # Compile to DXIL for consumption by the DX12 host app
+            dxc_compile(
                 to_spirv = False,
-                o0 = False,
                 output_path = self._bin_path
             )
+
+            # Transpile to GLSL for reference while bringing up the GLSL
+            # backend
+            spirv_path = self._src_path.parent / (self._src_path.name + '.spv')
+            dxc_compile(
+                to_spirv = True,
+                output_path = spirv_path
+            )
+
+            glsl_path = self._src_path.parent / (self._src_path.name + '.glsl')
+            spirv_cross.spirv_to_glsl(
+                spirv_path = spirv_path,
+                glsl_path = glsl_path
+            )
+
+            # glslc.compile(
+            #     src_path = glsl_path,
+            #     target_env = 'vulkan1.1',
+            #     shader_stage = self._get_glslc_stage(),
+            #     entry_point_name = _impl.entry_point_name,
+            #     output_path = spv_path
+            # )
+            
             return True
         except subprocess.CalledProcessError as err:
             return False
