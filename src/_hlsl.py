@@ -22,6 +22,7 @@ import _impl.common as common
 
 from metashade.hlsl.util import dxc
 from metashade.glsl.util import glslang
+from metashade.util.tests import RefDiffer
 from metashade.util import spirv_cross
 
 class Shader(_shader_base.Shader):
@@ -43,7 +44,7 @@ class Shader(_shader_base.Shader):
     def _get_glslang_stage() -> str:
         pass
 
-    def _compile(self) -> bool:
+    def _compile(self, ref_differ : RefDiffer) -> bool:
         try:
             def dxc_compile(to_spirv, output_path):
                 dxc.compile(
@@ -74,6 +75,9 @@ class Shader(_shader_base.Shader):
                 spirv_path = spirv_path,
                 glsl_path = glsl_path
             )
+
+            if ref_differ is not None:
+                ref_differ(glsl_path)
 
             glslang.compile(
                 src_path = glsl_path,
@@ -106,9 +110,10 @@ class VertexShader(Shader):
     def _get_glslang_stage() -> str:
         return 'vert'
     
-    def _generate(self):
+    def _generate(self, ref_differ):
         self._generate_wrapped(
-            self._vertex_data.generate_vs
+            self._vertex_data.generate_vs,
+            ref_differ
         )
 
 class PixelShader(Shader):
@@ -130,7 +135,8 @@ class PixelShader(Shader):
     def _get_glslang_stage() -> str:
         return 'frag'
 
-    def _generate(self):
+    def _generate(self, ref_differ):
         self._generate_wrapped(
-            self._ps_impl.generate
+            self._ps_impl.generate,
+            ref_differ
         )
