@@ -12,16 +12,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import abc
+import abc, os, subprocess
 from pathlib import Path
-import subprocess
+
 import _shader_base
 
 import _impl.ps as impl_ps
 import _impl.common as common
 
 from metashade.hlsl.util import dxc
-from metashade.glsl.util import glslc
+from metashade.glsl.util import glslang
 from metashade.util import spirv_cross
 
 class Shader(_shader_base.Shader):
@@ -37,6 +37,11 @@ class Shader(_shader_base.Shader):
     @staticmethod
     def _get_bin_extension() -> str:
         return 'cso'
+    
+    @staticmethod
+    @abc.abstractmethod
+    def _get_glslang_stage() -> str:
+        pass
 
     def _compile(self) -> bool:
         try:
@@ -70,13 +75,12 @@ class Shader(_shader_base.Shader):
                 glsl_path = glsl_path
             )
 
-            # glslc.compile(
-            #     src_path = glsl_path,
-            #     target_env = 'vulkan1.1',
-            #     shader_stage = self._get_glslc_stage(),
-            #     entry_point_name = _impl.entry_point_name,
-            #     output_path = spv_path
-            # )
+            glslang.compile(
+                src_path = glsl_path,
+                target_env = 'vulkan1.1',
+                shader_stage = self._get_glslang_stage(),
+                output_path = os.devnull
+            )
             
             return True
         except subprocess.CalledProcessError as err:
@@ -98,6 +102,10 @@ class VertexShader(Shader):
     def _get_hlsl_profile() -> str:
         return 'vs_6_0'
     
+    @staticmethod
+    def _get_glslang_stage() -> str:
+        return 'vert'
+    
     def _generate(self):
         self._generate_wrapped(
             self._vertex_data.generate_vs
@@ -114,11 +122,15 @@ class PixelShader(Shader):
             shader_name = self._ps_impl.get_id()
         )
 
-    def _generate(self):
-        self._generate_wrapped(
-            self._ps_impl.generate
-        ) 
-
     @staticmethod
     def _get_hlsl_profile():
         return 'ps_6_0'
+
+    @staticmethod
+    def _get_glslang_stage() -> str:
+        return 'frag'
+
+    def _generate(self):
+        self._generate_wrapped(
+            self._ps_impl.generate
+        )
