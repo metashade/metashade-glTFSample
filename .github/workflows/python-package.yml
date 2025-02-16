@@ -51,6 +51,13 @@ jobs:
         tag: main-tot
         fileName: glslang-master-windows-Release.zip
         out-file-path: '.glslang'
+    - uses: robinraju/release-downloader@v1.10
+      with:
+        repository: KhronosGroup/SPIRV-Cross
+        extract: true
+        tag: 2021-01-15
+        fileName: spirv-cross-vs2017-64bit-9acb9ec31f.tar.gz
+        out-file-path: '.SPIRV-Cross'
     - name: Print the directory tree
       run: |
         pwd
