@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=45", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "metashade-gltf-sample"
+version = "0.1.0"
+description = "glTF sample using metashade"
+readme = "README.md"
+requires-python = ">=3.8"
+dependencies = [
+    "pygltflib",
+    "pytest"
+]
+
+[tool.pytest.ini_options]
+testpaths = ["metashade/tests"]
+addopts = [
+    "-v",
+    "--tb=short",
+    "--strict-markers",
+    "--strict-config"
+]
+python_files = "test_*.py"
+python_classes = "Test*"
+python_functions = "test_*"
