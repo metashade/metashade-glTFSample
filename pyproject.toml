@@ -14,7 +14,7 @@ dependencies = [
 ]
 
 [tool.pytest.ini_options]
-testpaths = ["metashade/tests"]
+testpaths = ["metashade/tests", "tests"]
 addopts = [
     "-v",
     "--tb=short",
