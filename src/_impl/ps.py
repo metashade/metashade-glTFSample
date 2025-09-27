@@ -31,8 +31,7 @@ class ps:
         self._material_textures = MaterialTextures(material)
 
         self._alpha_mode = material.alphaMode
-        # alphaCutoff defaults to 0.5 according to glTF spec when alphaMode is MASK
-        self._alpha_cutoff = material.alphaCutoff if material.alphaCutoff is not None else 0.5
+        self._alpha_cutoff = material.alphaCutoff
 
     def get_id(self) -> str:
         shader_name = common.filename_prefix
