@@ -5,10 +5,32 @@ The goal is to demonstrate that [Metashade](https://github.com/metashade/metasha
 
 ## Getting started
 
-First, clone the repo, recursing into submodules, e.g.
+First, clone the repo, recursing into submodules:
 
 ```bash
 git clone --recurse-submodules https://github.com/metashade/metashade-glTFSample.git
+cd metashade-glTFSample
+```
+
+### Dependencies
+
+This project uses pinned dependencies for reproducible builds:
+
+```bash
+# Create virtual environment
+python -m venv .venv
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+
+# Install exact dependency versions
+pip install -r requirements.txt
+
+# Install project in development mode
+pip install -e .
+```
+
+**Alternative (may get newer dependency versions):**
+```bash
+pip install -e .
 ```
 
 The demo uses the following directory structure:
