@@ -9,8 +9,16 @@ description = "glTF sample using metashade"
 readme = "README.md"
 requires-python = ">=3.8"
 dependencies = [
-    "pygltflib",
-    "pytest"
+    "pygltflib==1.16.5",
+    "pytest>=8.0.0"
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+    "black",
+    "isort",
+    "mypy"
 ]
 
 [tool.pytest.ini_options]

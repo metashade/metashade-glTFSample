@@ -30,7 +30,11 @@ jobs:
     - name: Install Python dependencies
       run: |
         python -m pip install --upgrade pip
-        python -m pip install flake8 pygltflib pytest
+        python -m pip install flake8
+        # Install exact dependency versions for reproducible builds
+        python -m pip install -r requirements.txt
+        # Install project in development mode
+        python -m pip install -e . --no-deps
     - name: Lint with flake8
       run: |
         # stop the build if there are Python syntax errors or undefined names
