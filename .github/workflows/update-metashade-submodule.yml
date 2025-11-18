@@ -1,0 +1,116 @@
+name: Update Metashade Submodule
+
+on:
+  repository_dispatch:
+    types: [metashade-updated]
+  workflow_dispatch:
+    inputs:
+      metashade_ref:
+        description: 'Metashade commit/branch/tag to update to'
+        required: false
+        default: 'main'
+  schedule:
+    # Check for updates daily at 02:00 UTC
+    - cron: '0 2 * * *'
+  # Alternative trigger method via workflow_run (if webhook is configured)
+  workflow_run:
+    workflows: []
+    types: [completed]
+
+jobs:
+  update-submodule:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        submodules: recursive
+        token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Configure Git
+      run: |
+        git config --global user.name 'github-actions[bot]'
+        git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+
+    - name: Get current metashade commit
+      id: current-commit
+      run: |
+        cd metashade
+        echo "current=$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
+        cd ..
+
+    - name: Update metashade submodule to latest
+      id: update-submodule
+      run: |
+        # Get the target ref from workflow input or default to main
+        TARGET_REF="${{ github.event.inputs.metashade_ref || 'main' }}"
+        
+        # Update the submodule
+        git submodule update --remote metashade
+        
+        # Get the new commit hash
+        cd metashade
+        NEW_COMMIT=$(git rev-parse HEAD)
+        echo "new=$NEW_COMMIT" >> $GITHUB_OUTPUT
+        
+        # Get commit message for the new commit
+        COMMIT_MSG=$(git log -1 --pretty=format:"%s")
+        echo "commit_msg=$COMMIT_MSG" >> $GITHUB_OUTPUT
+        
+        # Get short commit hash
+        SHORT_COMMIT=$(git rev-parse --short HEAD)
+        echo "short=$SHORT_COMMIT" >> $GITHUB_OUTPUT
+        cd ..
+
+    - name: Check if update is needed
+      id: check-update
+      run: |
+        if [ "${{ steps.current-commit.outputs.current }}" != "${{ steps.update-submodule.outputs.new }}" ]; then
+          echo "needs_update=true" >> $GITHUB_OUTPUT
+        else
+          echo "needs_update=false" >> $GITHUB_OUTPUT
+          echo "No update needed - metashade submodule is already at the latest commit"
+        fi
+
+    - name: Create Pull Request
+      if: steps.check-update.outputs.needs_update == 'true'
+      uses: peter-evans/create-pull-request@v5
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        commit-message: |
+          Update metashade submodule to ${{ steps.update-submodule.outputs.short }}
+          
+          Updates metashade submodule from ${{ steps.current-commit.outputs.current }} to ${{ steps.update-submodule.outputs.new }}
+          
+          Latest metashade commit: ${{ steps.update-submodule.outputs.commit_msg }}
+        title: 'Update metashade submodule to ${{ steps.update-submodule.outputs.short }}'
+        body: |
+          ## Metashade Submodule Update
+          
+          This PR automatically updates the `metashade` submodule to the latest commit.
+          
+          **Changes:**
+          - Previous commit: `${{ steps.current-commit.outputs.current }}`
+          - New commit: `${{ steps.update-submodule.outputs.new }}`
+          - Latest commit message: ${{ steps.update-submodule.outputs.commit_msg }}
+          
+          **Verification:**
+          The CI pipeline will run to ensure all tests pass with the updated submodule.
+          
+          ---
+          *This PR was created automatically by the Update Metashade Submodule workflow.*
+        branch: update-metashade-submodule
+        delete-branch: true
+        draft: false
+
+    - name: Output result
+      run: |
+        if [ "${{ steps.check-update.outputs.needs_update }}" == "true" ]; then
+          echo "✅ Created PR to update metashade submodule to ${{ steps.update-submodule.outputs.short }}"
+        else
+          echo "ℹ️ No update needed - metashade submodule is already up to date"
+        fi
