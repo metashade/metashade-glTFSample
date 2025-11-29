@@ -21,7 +21,7 @@ from pygltflib import GLTF2
 from metashade.util import perf
 from metashade.hlsl.util import dxc
 from metashade.glsl.util import glslang
-from metashade.util.tests import RefDiffer
+from metashade.util.testing import RefDiffer
 
 import _shader_base, _hlsl, _glsl
 from _impl.vertex_data import VertexData
