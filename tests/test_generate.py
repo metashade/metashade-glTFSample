@@ -23,7 +23,7 @@ src_dir_path = (repo_root_dir_path / 'src').resolve()
 metashade_dir_path = (repo_root_dir_path / 'metashade').resolve()
 sys.path += [str(src_dir_path), str(metashade_dir_path)]
 
-from metashade.util.tests import RefDiffer
+from metashade.util.testing import RefDiffer
 import generate
 
 class TestGenerate:

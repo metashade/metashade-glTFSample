@@ -17,7 +17,7 @@ import io
 from pathlib import Path
 import sys
 from typing import NamedTuple
-from metashade.util.tests import RefDiffer
+from metashade.util.testing import RefDiffer
 from metashade.util import perf
 
 class Shader(abc.ABC):

@@ -22,7 +22,7 @@ import _impl.common as common
 
 from metashade.hlsl.util import dxc
 from metashade.glsl.util import glslang
-from metashade.util.tests import RefDiffer
+from metashade.util.testing import RefDiffer
 from metashade.util import spirv_cross
 
 class Shader(_shader_base.Shader):
