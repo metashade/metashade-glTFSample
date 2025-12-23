@@ -1,0 +1,39 @@
+# This file should be placed in the metashade/metashade repository
+# at .github/workflows/notify-gltf-sample.yml
+# 
+# It will trigger the submodule update workflow in metashade-glTFSample
+# whenever changes are pushed to the main branch of metashade
+
+name: Notify glTF Sample of Updates
+
+on:
+  push:
+    branches: [ main ]
+  # Also trigger on releases for important updates
+  release:
+    types: [published]
+
+jobs:
+  notify-gltf-sample:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Trigger submodule update in glTF Sample
+      uses: peter-evans/repository-dispatch@v3
+      with:
+        token: ${{ secrets.GLTF_SAMPLE_DISPATCH_TOKEN }}
+        repository: metashade/metashade-glTFSample
+        event-type: metashade-updated
+        client-payload: |
+          {
+            "ref": "${{ github.ref }}",
+            "sha": "${{ github.sha }}",
+            "repository": "${{ github.repository }}",
+            "pusher": "${{ github.actor }}",
+            "commit_message": "${{ github.event.head_commit.message }}"
+          }
+
+    - name: Log notification
+      run: |
+        echo "✅ Notified metashade-glTFSample of update"
+        echo "   Commit: ${{ github.sha }}"
+        echo "   Message: ${{ github.event.head_commit.message }}"
