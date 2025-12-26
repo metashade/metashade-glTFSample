@@ -1,6 +1,6 @@
 {
-  "name": "metashade-superrepo",
-  "version-string": "0.1.0",
+  "name": "metashade-gltfsample",
+  "version-string": "0.1.1",
   "dependencies": [
     "boost-program-options",
     "boost-format"
