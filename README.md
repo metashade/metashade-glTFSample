@@ -46,7 +46,18 @@ The demo uses the following directory structure:
 
 ## Building [glTFSample](https://github.com/metashade/glTFSample/tree/metashade_demo)
 
-Follow the build instructions in [glTFSample/readme.md](https://github.com/metashade/glTFSample/blob/metashade_demo/readme.md#build-instructions).
+1. Initialize VCPKG (only needed once):
+   ```bash
+   ./vcpkg/bootstrap-vcpkg.bat
+   ```
+
+2. Configure and build:
+   ```bash
+   cmake --preset default
+   cmake --build build
+   ```
+   
+   Or open `build/MetashadeSuperRepo.sln` in Visual Studio 2022.
 
 ## Generating the shaders
 
@@ -72,8 +83,8 @@ The Visual Studio Code launch configurations in [.vscode/launch.json](.vscode/la
 In order to use the generated shaders with [glTFSample](https://github.com/metashade/glTFSample/tree/metashade_demo), their parent directory needs to be passed to the executable via a [command-line argument](https://github.com/metashade/glTFSample/blob/metashade_demo/readme.md#command-line-interface):
 
 ```
-cd glTFSample\bin
-GLTFSample_DX12.exe --metashade-out-dir=..\build\DX12\metashade-out
+cd ..\build\bin\
+GLTFSample_DX12.exe --metashade-out-dir=..\DX12\metashade-out
 ```
 
 The names of the generated shader files are derived from the names of glTF meshes and primitives. [glTFSample](https://github.com/metashade/glTFSample/tree/metashade_demo) uses the same naming convention to find the right shaders at runtime and use them for rendering.
