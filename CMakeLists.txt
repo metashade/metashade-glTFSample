@@ -1,6 +1,11 @@
 cmake_minimum_required(VERSION 3.15)
 project(metashade-glTFSample)
 
+# glTFSample uses CMAKE_HOME_DIRECTORY to locate the bin directory. 
+# We override it here to redirect output to build/bin without modifying the submodule.
+# This prevents the submodule from polluting the root directory.
+set(CMAKE_HOME_DIRECTORY ${CMAKE_BINARY_DIR})
+
 add_subdirectory(glTFSample)
 
 find_package(Boost REQUIRED COMPONENTS program_options format)
