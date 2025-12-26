@@ -3,7 +3,18 @@
     // Hover to view descriptions of existing attributes.
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
-    "configurations": [        
+    "configurations": [
+        {
+            "name": "GLTFSample (DX12)",
+            "type": "cppvsdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/bin/GLTFSample_DX12.exe",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}/build/bin",
+            "environment": [],
+            "console": "externalTerminal"
+        },
         {
             "name": "Generate and compile - parallel",
             "type": "debugpy",
@@ -11,8 +22,10 @@
             "program": "${workspaceFolder}/src/generate.py",
             "console": "integratedTerminal",
             "args": [
-                "--gltf-dir", "${workspaceFolder}/glTFSample/media/Cauldron-Media",
-                "--out-dir", "${workspaceFolder}/tests/ref/content"
+                "--gltf-dir",
+                "${workspaceFolder}/glTFSample/media/Cauldron-Media",
+                "--out-dir",
+                "${workspaceFolder}/tests/ref/content"
             ],
             "env": {
                 "PYTHONPATH": "${workspaceFolder}/metashade"
@@ -25,8 +38,10 @@
             "program": "${workspaceFolder}/src/generate.py",
             "console": "integratedTerminal",
             "args": [
-                "--gltf-dir", "${workspaceFolder}/glTFSample/media/Cauldron-Media",
-                "--out-dir", "${workspaceFolder}/tests/ref/content",
+                "--gltf-dir",
+                "${workspaceFolder}/glTFSample/media/Cauldron-Media",
+                "--out-dir",
+                "${workspaceFolder}/tests/ref/content",
                 "--serial"
             ],
             "env": {
@@ -39,10 +54,13 @@
             "request": "launch",
             "program": "${workspaceFolder}/src/generate.py",
             "console": "integratedTerminal",
-            "args": ["--help"],
+            "args": [
+                "--help"
+            ],
             "env": {
                 "PYTHONPATH": "${workspaceFolder}/metashade"
             }
         }
-    ]
+    ],
+    "compounds": []
 }
