@@ -1,0 +1,22 @@
+{
+    "version": 3,
+    "cmakeMinimumRequired": {
+        "major": 3,
+        "minor": 15,
+        "patch": 0
+    },
+    "configurePresets": [
+        {
+            "name": "default",
+            "displayName": "Default Config",
+            "description": "Default build using vcpkg toolchain",
+            "binaryDir": "${sourceDir}/build",
+            "installDir": "${sourceDir}/glTFSample",
+            "generator": "Visual Studio 17 2022",
+            "cacheVariables": {
+                "CMAKE_TOOLCHAIN_FILE": "${sourceDir}/vcpkg/scripts/buildsystems/vcpkg.cmake",
+                "GFX_API_DX12": "ON"
+            }
+        }
+    ]
+}

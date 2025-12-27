@@ -4,6 +4,7 @@
         "-v"
     ],
     "python.testing.unittestEnabled": false,
+    "cmake.configureOnOpen": false,
     "python.testing.pytestEnabled": true,
     "python.testing.autoTestDiscoverOnSaveEnabled": true,
     "python.defaultInterpreterPath": "./.venv/Scripts/python.exe"

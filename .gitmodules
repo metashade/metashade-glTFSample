@@ -8,3 +8,6 @@
 [submodule "tests/ref"]
 	path = tests/ref
 	url = https://github.com/metashade/metashade-glTFSample-testrefs.git
+[submodule "vcpkg"]
+	path = vcpkg
+	url = https://github.com/microsoft/vcpkg.git
