@@ -59,7 +59,7 @@ The demo uses the following directory structure:
    cmake --build build
    ```
    
-   Or open `build/MetashadeSuperRepo.sln` in Visual Studio 2022.
+   Or open `build/metashade-glTFSample.sln` in Visual Studio 2022.
 
 ## Generating the shaders
 
