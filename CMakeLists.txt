@@ -1,9 +1,9 @@
 cmake_minimum_required(VERSION 3.21)
 project(metashade-glTFSample)
 
-# glTFSample uses CMAKE_HOME_DIRECTORY to locate the bin directory. 
-# We override it to ${CMAKE_BINARY_DIR} to prompt the submodule to write to build/bin
-# instead of the project root. Our CopyArtifacts target then handles moving them to glTFSample/bin.
+# glTFSample uses CMAKE_HOME_DIRECTORY to locate its bin directory.
+# Override it to ${CMAKE_BINARY_DIR} so the submodule writes binaries to build/bin
+# (the build tree) instead of the project root source directory.
 set(CMAKE_HOME_DIRECTORY ${CMAKE_BINARY_DIR})
 
 # Force the 'INSTALL' target to run as part of the default build in Visual Studio.
@@ -83,5 +83,4 @@ if(TARGET GLTFSample_VK)
         set_target_properties(GLTFSample_VK PROPERTIES RUNTIME_OUTPUT_DIRECTORY_${CHANGE_CONFIG} "${CMAKE_BINARY_DIR}/bin")
     endforeach()
 endif()
-
 
