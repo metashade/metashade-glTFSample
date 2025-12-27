@@ -1,11 +1,6 @@
-cmake_minimum_required(VERSION 3.15)
+cmake_minimum_required(VERSION 3.21)
 project(metashade-glTFSample)
 
-# glTFSample uses CMAKE_HOME_DIRECTORY to locate the bin directory. 
-# We override it here to redirect output to build/bin without modifying the submodule.
-# glTFSample uses CMAKE_HOME_DIRECTORY to locate the bin directory. 
-# We override it to ${CMAKE_BINARY_DIR} to prompt the submodule to write to build/bin
-# instead of the project root. Our CopyArtifacts target then handles moving them to glTFSample/bin.
 # glTFSample uses CMAKE_HOME_DIRECTORY to locate the bin directory. 
 # We override it to ${CMAKE_BINARY_DIR} to prompt the submodule to write to build/bin
 # instead of the project root. Our CopyArtifacts target then handles moving them to glTFSample/bin.
@@ -14,6 +9,9 @@ set(CMAKE_HOME_DIRECTORY ${CMAKE_BINARY_DIR})
 # Force the 'INSTALL' target to run as part of the default build in Visual Studio.
 # This ensures that 'glTFSample/bin' is automatically updated when you build/launch (F5).
 set(CMAKE_VS_INCLUDE_INSTALL_TO_DEFAULT_BUILD 1)
+
+# Find Boost dependencies (needed for linking and installation)
+find_package(Boost REQUIRED COMPONENTS program_options format)
 
 # Add the glTFSample submodule.
 add_subdirectory(glTFSample)
@@ -24,9 +22,10 @@ install(TARGETS GLTFSample_DX12 GLTFSample_VK
     RUNTIME DESTINATION bin
 )
 
-# Install required DLLs
-install(FILES "${CMAKE_BINARY_DIR}/bin/boost_program_options-vc143-mt-gd-x64-1_90.dll"
-    DESTINATION bin
+# Install Boost runtime artifacts (DLLs) dynamically based on configuration.
+# This handles Debug/Release automatically.
+install(IMPORTED_RUNTIME_ARTIFACTS Boost::program_options
+    RUNTIME DESTINATION bin
 )
 
 # Install assets that the submodule generates/copies to the build directory
@@ -51,7 +50,7 @@ if(MSVC)
     install(FILES $<TARGET_PDB_FILE:GLTFSample_VK> DESTINATION bin OPTIONAL)
 endif()
 
-find_package(Boost REQUIRED COMPONENTS program_options format)
+
 
 if(TARGET GLTFSample_DX12)
     target_link_libraries(GLTFSample_DX12 PRIVATE Boost::program_options Boost::format)
