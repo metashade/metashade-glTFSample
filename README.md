@@ -46,6 +46,8 @@ The demo uses the following directory structure:
 
 ## Building [glTFSample](https://github.com/metashade/glTFSample/tree/metashade_demo)
 
+**Prerequisites:** Follow the build instructions in [glTFSample/readme.md](https://github.com/metashade/glTFSample/blob/metashade_demo/readme.md#build-instructions) for system requirements (e.g., Vulkan SDK).
+
 1. Initialize VCPKG (only needed once):
    ```bash
    ./vcpkg/bootstrap-vcpkg.bat
