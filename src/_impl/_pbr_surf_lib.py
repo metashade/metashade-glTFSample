@@ -17,48 +17,8 @@ TODO: generate once and include in all pixel shaders.
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import math, sys
 from metashade.modules import export
-
-@export
-def D_Ggx(sh, NdotH : 'Float', fAlphaRoughness : 'Float') -> 'Float':
-    sh // "https://google.github.io/filament/Filament.md.html#materialsystem/specularbrdf/normaldistributionfunction(speculard)"
-    sh // ""
-    sh.fASqr = fAlphaRoughness * fAlphaRoughness
-    sh.fF = (NdotH * sh.fASqr - NdotH) * NdotH + sh.Float(1.0)
-    sh.return_(
-        (sh.fASqr / (sh.Float(math.pi) * sh.fF * sh.fF )).saturate()
-    )
-
-@export
-def F_Schlick(sh, LdotH : 'Float', rgbF0 : 'RgbF') -> 'RgbF':
-    sh.return_(
-        rgbF0 + (sh.RgbF(1.0) - rgbF0)
-            * (sh.Float(1.0) - LdotH).pow(sh.Float(5.0))
-    )
-
-@export
-def V_SmithGgxCorrelated(
-    sh,
-    NdotV : 'Float',
-    NdotL : 'Float',
-    fAlphaRoughness : 'Float'
-) -> 'Float':
-    sh // "https://google.github.io/filament/Filament.md.html#materialsystem/specularbrdf/geometricshadowing(specularg)"
-    sh // ""
-    sh.fASqr = fAlphaRoughness * fAlphaRoughness
-    sh.fGgxL = NdotV * (
-        (NdotL - NdotL * sh.fASqr) * NdotL + sh.fASqr
-    ).sqrt()
-    sh.fGgxV = NdotL * (
-        (NdotV - NdotV * sh.fASqr) * NdotV + sh.fASqr
-    ).sqrt()
-    sh.fV = sh.Float(0.5) / (sh.fGgxL + sh.fGgxV)
-    sh.return_(sh.fV.saturate())
-
-@export
-def Fd_Lambert(sh) -> 'Float':
-    sh.return_( sh.Float( 1.0 / math.pi ) )
+from metashade.std.surf.pbr import microfacet, fresnel, diffuse
 
 @export
 def pbrBrdf(
@@ -109,5 +69,12 @@ def generate(sh):
         fOpacity = sh.Float
     )
 
+    # Instantiate PBR building blocks from metashade.std
+    sh.instantiate(microfacet)
+    sh.instantiate(fresnel)
+    sh.instantiate(diffuse)
+
+    # Instantiate local functions (pbrBrdf, getRangeAttenuation)
+    import sys
     this_module = sys.modules[globals()['__name__']]
     sh.instantiate(this_module)
