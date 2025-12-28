@@ -89,12 +89,14 @@ The Visual Studio Code launch configurations in [.vscode/launch.json](.vscode/la
 
 ## Rendering with the generated shaders
 
-In order to use the generated shaders with [glTFSample](https://github.com/metashade/glTFSample/tree/metashade_demo), their parent directory needs to be passed to the executable via a [command-line argument](https://github.com/metashade/glTFSample/blob/metashade_demo/readme.md#command-line-interface):
+To use the generated shaders with glTFSample, pass the shader output directory via the `--metashade-out-dir` argument:
 
+```bash
+cd glTFSample/bin
+GLTFSample_DX12.exe --metashade-out-dir ../../tests/ref/content
 ```
-cd ..\build\bin\
-GLTFSample_DX12.exe --metashade-out-dir=..\DX12\metashade-out
-```
+
+Or use the VS Code launch configurations which are pre-configured with the correct paths.
 
 The names of the generated shader files are derived from the names of glTF meshes and primitives. [glTFSample](https://github.com/metashade/glTFSample/tree/metashade_demo) uses the same naming convention to find the right shaders at runtime and use them for rendering.
 
