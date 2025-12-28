@@ -9,7 +9,10 @@
             "type": "cppvsdbg",
             "request": "launch",
             "program": "${workspaceFolder}/glTFSample/bin/GLTFSample_DX12d.exe",
-            "args": [],
+            "args": [
+                "--metashade-out-dir",
+                "${workspaceFolder}/tests/ref/content"
+            ],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}/glTFSample/bin",
             "environment": [],
@@ -20,7 +23,10 @@
             "type": "cppvsdbg",
             "request": "launch",
             "program": "${workspaceFolder}/glTFSample/bin/GLTFSample_VKd.exe",
-            "args": [],
+            "args": [
+                "--metashade-out-dir",
+                "${workspaceFolder}/tests/ref/content"
+            ],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}/glTFSample/bin",
             "environment": [],
