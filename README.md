@@ -44,9 +44,16 @@ The demo uses the following directory structure:
    * [metashade](https://github.com/metashade/metashade) - submodule pointing at https://github.com/metashade/metashade
    * [src](src) - the demo code generating shaders with [metashade](https://github.com/metashade/metashade) for rendering with [glTFSample](https://github.com/metashade/glTFSample/tree/metashade_demo).
 
-## Building [glTFSample](https://github.com/metashade/glTFSample/tree/metashade_demo)
+## Building glTFSample (C++ Host Application)
 
-**Prerequisites:** Follow the build instructions in [glTFSample/readme.md](https://github.com/metashade/glTFSample/blob/metashade_demo/readme.md#build-instructions) for system requirements (e.g., Vulkan SDK).
+### Prerequisites
+
+- [Visual Studio 2022](https://visualstudio.microsoft.com/downloads/)
+- [CMake 3.21](https://cmake.org/download/) or newer
+- [Windows 10 SDK](https://developer.microsoft.com/en-us/windows/downloads/windows-10-sdk) (typically installed with Visual Studio)
+- [Vulkan SDK 1.3.283](https://www.lunarg.com/vulkan-sdk/) or newer (required for Vulkan build and shader compilation tools)
+
+### Build Steps
 
 1. Initialize VCPKG (only needed once):
    ```bash
