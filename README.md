@@ -90,3 +90,23 @@ GLTFSample_DX12.exe --metashade-out-dir=..\DX12\metashade-out
 ```
 
 The names of the generated shader files are derived from the names of glTF meshes and primitives. [glTFSample](https://github.com/metashade/glTFSample/tree/metashade_demo) uses the same naming convention to find the right shaders at runtime and use them for rendering.
+
+## Troubleshooting
+
+### DXIL Signing (DX12)
+
+When compiling HLSL shaders to DXIL using DXC, the `dxil.dll` library must be present in the same directory as `dxc.exe` for the shaders to be **signed**.
+
+**Symptoms of unsigned shaders:**
+- D3D12 error: "Input Signature in bytecode could not be parsed"
+- `E_INVALIDARG` when creating graphics pipeline
+- Warning during compilation: "DXIL signing library (dxil.dll) not found"
+
+**Why this matters:**
+- Unsigned DXIL may work on machines with Windows **Developer Mode** enabled
+- Unsigned DXIL will **fail on end-user machines** without Developer Mode
+- Even with Developer Mode, unsigned DXIL can cause validation layer crashes
+
+**Solution:**
+The VS Code launch configurations for shader generation include Cauldron's DXC (which has `dxil.dll`) in the PATH. When running shader generation from the command line, ensure a DXC with `dxil.dll` is in your PATH, or download the official [DirectXShaderCompiler release](https://github.com/microsoft/DirectXShaderCompiler/releases) which includes it.
+

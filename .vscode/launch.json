@@ -45,7 +45,8 @@
                 "${workspaceFolder}/tests/ref/content"
             ],
             "env": {
-                "PYTHONPATH": "${workspaceFolder}/metashade"
+                "PYTHONPATH": "${workspaceFolder}/metashade",
+                "PATH": "${workspaceFolder}/glTFSample/libs/cauldron/libs/DXC/bin/x64;${env:PATH}"
             }
         },
         {
@@ -62,7 +63,8 @@
                 "--serial"
             ],
             "env": {
-                "PYTHONPATH": "${workspaceFolder}/metashade"
+                "PYTHONPATH": "${workspaceFolder}/metashade",
+                "PATH": "${workspaceFolder}/glTFSample/libs/cauldron/libs/DXC/bin/x64;${env:PATH}"
             }
         },
         {
