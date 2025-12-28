@@ -44,9 +44,29 @@ The demo uses the following directory structure:
    * [metashade](https://github.com/metashade/metashade) - submodule pointing at https://github.com/metashade/metashade
    * [src](src) - the demo code generating shaders with [metashade](https://github.com/metashade/metashade) for rendering with [glTFSample](https://github.com/metashade/glTFSample/tree/metashade_demo).
 
-## Building [glTFSample](https://github.com/metashade/glTFSample/tree/metashade_demo)
+## Building glTFSample (C++ Host Application)
 
-Follow the build instructions in [glTFSample/readme.md](https://github.com/metashade/glTFSample/blob/metashade_demo/readme.md#build-instructions).
+### Prerequisites
+
+- [Visual Studio 2022](https://visualstudio.microsoft.com/downloads/)
+- [CMake 3.21](https://cmake.org/download/) or newer
+- [Windows 10 SDK](https://developer.microsoft.com/en-us/windows/downloads/windows-10-sdk) (typically installed with Visual Studio)
+- [Vulkan SDK 1.3.283](https://www.lunarg.com/vulkan-sdk/) or newer (required for Vulkan build and shader compilation tools)
+
+### Build Steps
+
+1. Initialize VCPKG (only needed once):
+   ```bash
+   ./vcpkg/bootstrap-vcpkg.bat
+   ```
+
+2. Configure and build:
+   ```bash
+   cmake --preset default
+   cmake --build build
+   ```
+   
+   Or open `build/metashade-glTFSample.sln` in Visual Studio 2022.
 
 ## Generating the shaders
 
@@ -69,11 +89,33 @@ The Visual Studio Code launch configurations in [.vscode/launch.json](.vscode/la
 
 ## Rendering with the generated shaders
 
-In order to use the generated shaders with [glTFSample](https://github.com/metashade/glTFSample/tree/metashade_demo), their parent directory needs to be passed to the executable via a [command-line argument](https://github.com/metashade/glTFSample/blob/metashade_demo/readme.md#command-line-interface):
+To use the generated shaders with glTFSample, pass the shader output directory via the `--metashade-out-dir` argument:
 
+```bash
+cd glTFSample/bin
+GLTFSample_DX12.exe --metashade-out-dir ../../tests/ref/content
 ```
-cd glTFSample\bin
-GLTFSample_DX12.exe --metashade-out-dir=..\build\DX12\metashade-out
-```
+
+Or use the VS Code launch configurations which are pre-configured with the correct paths.
 
 The names of the generated shader files are derived from the names of glTF meshes and primitives. [glTFSample](https://github.com/metashade/glTFSample/tree/metashade_demo) uses the same naming convention to find the right shaders at runtime and use them for rendering.
+
+## Troubleshooting
+
+### DXIL Signing (DX12)
+
+When compiling HLSL shaders to DXIL using DXC, the `dxil.dll` library must be present in the same directory as `dxc.exe` for the shaders to be **signed**.
+
+**Symptoms of unsigned shaders:**
+- D3D12 error: "Input Signature in bytecode could not be parsed"
+- `E_INVALIDARG` when creating graphics pipeline
+- Warning during compilation: "DXIL signing library (dxil.dll) not found"
+
+**Why this matters:**
+- Unsigned DXIL may work on machines with Windows **Developer Mode** enabled
+- Unsigned DXIL will **fail on end-user machines** without Developer Mode
+- Even with Developer Mode, unsigned DXIL can cause validation layer crashes
+
+**Solution:**
+The VS Code launch configurations for shader generation include Cauldron's DXC (which has `dxil.dll`) in the PATH. When running shader generation from the command line, ensure a DXC with `dxil.dll` is in your PATH, or download the official [DirectXShaderCompiler release](https://github.com/microsoft/DirectXShaderCompiler/releases) which includes it.
+
