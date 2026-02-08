@@ -14,8 +14,8 @@
 
 from typing import Any, NamedTuple
 
-from metashade.hlsl.sm6 import ps_6_0
-from metashade.glsl import frag
+from metashade.targets.hlsl.sm6 import ps_6_0
+from metashade.targets.glsl import frag
 
 from . import common, _pbr_surf_lib, _uniforms
 from ._material_textures import MaterialTextures

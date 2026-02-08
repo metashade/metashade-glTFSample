@@ -15,7 +15,7 @@
 import abc, subprocess
 from pathlib import Path
 
-from metashade.glsl.util import glslang
+from metashade.targets.glsl.util import glslang
 
 import _shader_base
 import _impl.ps as impl_ps

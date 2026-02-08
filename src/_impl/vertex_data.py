@@ -15,7 +15,7 @@
 from collections import OrderedDict
 from typing import NamedTuple
 
-from metashade.hlsl.sm6 import vs_6_0
+from metashade.targets.hlsl.sm6 import vs_6_0
 from . import common, _uniforms
 
 class VertexData:
