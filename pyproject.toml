@@ -4,19 +4,19 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "metashade-gltf-sample"
-version = "0.1.1"
+version = "0.1.2"
 description = "glTF sample using metashade"
 readme = "README.md"
 requires-python = ">=3.9,<3.12"
 dependencies = [
-    "metashade>=0.5.1",
+    "metashade>=0.6.0",
     "pygltflib==1.16.5",
-    "pytest>=8.0.0"
+    "pytest>=9.0.3"
 ]
 
 [project.optional-dependencies]
 dev = [
-    "pytest>=8.0.0",
+    "pytest>=9.0.3",
     "black",
     "isort",
     "mypy"
