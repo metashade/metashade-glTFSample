@@ -8,6 +8,9 @@ on:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
+  schedule:
+    # Every Friday at 8:00 AM EDT (12:00 UTC)
+    - cron: '0 12 * * 5'
 
 jobs:
   build:
@@ -16,15 +19,15 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.9", "3.10", "3.11"]
+        python-version: ["3.11", "3.13", "3.14"]
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v4
+      uses: actions/checkout@v7
       with:
         submodules: 'recursive'
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v3
+      uses: actions/setup-python@v6
       with:
         python-version: ${{ matrix.python-version }}
     - name: Install Python dependencies
@@ -41,21 +44,21 @@ jobs:
         flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
         # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
-    - uses: robinraju/release-downloader@v1.10
+    - uses: robinraju/release-downloader@v1.13
       with:
         repository: microsoft/DirectXShaderCompiler
         extract: true
         tag: v1.8.2407
         fileName: dxc_2024_07_31.zip
         out-file-path: '.dxc'
-    - uses: robinraju/release-downloader@v1.10
+    - uses: robinraju/release-downloader@v1.13
       with:
         repository: KhronosGroup/glslang
         extract: true
         tag: main-tot
-        fileName: glslang-master-windows-Release.zip
+        fileName: glslang-main-windows-x86_64-release.zip
         out-file-path: '.glslang'
-    - uses: robinraju/release-downloader@v1.10
+    - uses: robinraju/release-downloader@v1.13
       with:
         repository: KhronosGroup/SPIRV-Cross
         extract: true

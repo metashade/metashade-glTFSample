@@ -1,6 +1,6 @@
 {
   "name": "metashade-gltfsample",
-  "version-string": "0.1.1",
+  "version-string": "0.1.2",
   "dependencies": [
     "boost-program-options",
     "boost-format"
