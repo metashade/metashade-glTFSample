@@ -10,8 +10,7 @@ readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
     "metashade>=0.6.0",
-    "pygltflib==1.16.5",
-    "pytest>=9.1.1"
+    "pygltflib==1.16.5"
 ]
 
 [project.optional-dependencies]
